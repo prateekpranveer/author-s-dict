@@ -23,6 +23,17 @@ db.run(`
   )
 `);
 
+app.delete('/clear', (req, res) => {
+  db.run('DELETE FROM sentences', (err) => {
+    if (err) {
+      console.error(err.message);
+      return res.status(500).send('Failed to clear sentences');
+    }
+    res.send('All sentences deleted.');
+  });
+});
+
+
 // 🔍 Search + dictionary endpoint
 app.get('/search', async (req, res) => {
   const { word } = req.query;
