@@ -25,7 +25,7 @@ function App() {
     setVisibleCount(10);
 
     try {
-      const res = await fetch(`http://localhost:3000/search?word=${encodeURIComponent(word)}`);
+      const res = await fetch(`https://author-s-dict.onrender.com/search?word=${encodeURIComponent(word)}`);
       const data = await res.json();
       setResults(data.matches || []);
       setDictionary(data.dictionary || {});
