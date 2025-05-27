@@ -6,3 +6,18 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fdfdfd;
+}
+
+input, button {
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3);
+}

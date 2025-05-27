@@ -9,7 +9,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedAuthor, setSelectedAuthor] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(10); // Pagination: Show 10 initially
+  const [visibleCount, setVisibleCount] = useState(10);
 
   const handleSearch = async () => {
     if (!word.trim() || word.trim().length < 2) {
@@ -38,24 +38,22 @@ function App() {
   };
 
   const uniqueAuthors = Array.from(new Set(results.map(r => r.author).filter(Boolean)));
-
   const filteredResults = selectedAuthor
     ? results.filter(r => r.author === selectedAuthor)
     : results;
-
   const visibleResults = filteredResults.slice(0, visibleCount);
 
   return (
-    <div className="min-h-screen bg-white text-gray-800 p-6 sm:p-10 font-sans">
-      <div className="mx-auto space-y-8">
+    <div className="min-h-screen bg-white text-gray-800 px-4 py-6 sm:p-10 font-sans">
+      <div className="mx-auto max-w-7xl space-y-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-center text-sky-700 mb-6 drop-shadow-sm">
           Author's Dictionary
         </h1>
 
-        <div className="px-12">
-          <div className="flex gap-3">
+        <div className="sm:px-12">
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
-              className="flex-grow p-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+              className="w-full p-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
               type="text"
               placeholder="Enter a word..."
               value={word}
@@ -64,20 +62,20 @@ function App() {
             />
             <button
               onClick={handleSearch}
-              className="px-4 py-2 text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 rounded-md shadow"
+              className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 rounded-md shadow"
             >
               GO
             </button>
           </div>
 
-          <div className="flex space-x-12 mt-12">
+          <div className="flex flex-col lg:flex-row gap-8 mt-10">
             {/* Dictionary Panel */}
-            <div className="w-2/5">
+            <div className="lg:w-2/5 w-full">
               {loading && <p className="text-center text-sm text-sky-600 mt-6">Searching...</p>}
               {error && <p className="text-center text-sm text-red-600 mt-6">{error}</p>}
 
               {dictionary && dictionary.word && (
-                <div className="p-6 bg-white border border-gray-200 rounded-xl shadow-sm space-y-4 text-sm leading-relaxed">
+                <div className="p-4 sm:p-6 bg-white border border-gray-200 rounded-xl shadow-sm space-y-4 text-sm leading-relaxed">
                   <h2 className="text-xl font-bold text-pink-700">
                     {dictionary.word}{' '}
                     <span className="text-gray-500 font-normal">{dictionary.phonetic}</span>
@@ -130,19 +128,19 @@ function App() {
             </div>
 
             {/* Sentence Matches Panel */}
-            <div className="w-3/5 space-y-3">
+            <div className="lg:w-3/5 w-full space-y-3">
               {uniqueAuthors.length > 0 && (
-                <div className='mb-6'>
-                  <h2 className="text-sm text-gray-800 mb-4">
+                <div className="mb-6">
+                  <h2 className="text-sm text-gray-800 mb-2">
                     Author's Use “<span className='font-medium text-yellow-700'>{word}</span>”:
                   </h2>
-                  <div className="flex flex-wrap gap-3 text-sm">
+                  <div className="flex flex-wrap gap-3 text-sm overflow-x-auto">
                     <span
                       onClick={() => setSelectedAuthor(null)}
                       className={`cursor-pointer border-b-2 pb-0.5 ${
                         !selectedAuthor
                           ? 'border-sky-600 text-sky-600 font-semibold'
-                          : 'border-transparent text-grey-600 hover:text-red-600'
+                          : 'border-transparent text-gray-600 hover:text-red-600'
                       }`}
                     >
                       Show All
@@ -164,8 +162,6 @@ function App() {
                 </div>
               )}
 
-              
-              
               {visibleResults.map((item, idx) => {
                 const regex = new RegExp(`(${word})`, 'gi');
                 const parts = item.text.split(regex);
@@ -173,7 +169,7 @@ function App() {
                 return (
                   <div
                     key={idx}
-                    className="px-4 mt-4 py-3 bg-white border-l-4 border-sky-400 shadow-sm rounded-md text-sm"
+                    className="px-4 py-3 bg-white border-l-4 border-sky-400 shadow-sm rounded-md text-sm"
                   >
                     <p className="mb-1">
                       {parts.map((part, i) =>
