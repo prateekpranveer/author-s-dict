@@ -1,5 +1,15 @@
+
 import { useState } from 'react';
-import { PlayCircle } from 'lucide-react';
+import {
+  PlayCircle,
+  Search,
+  BookOpen,
+  Sparkles,
+  Headphones,
+  Feather,
+  ChevronRight,
+  BookMarked,
+} from 'lucide-react';
 import './App.css';
 
 function App() {
@@ -25,7 +35,9 @@ function App() {
     setVisibleCount(10);
 
     try {
-      const res = await fetch(`https://author-s-dict.onrender.com/search?word=${encodeURIComponent(word)}`);
+      const res = await fetch(
+        `https://author-s-dict.onrender.com/search?word=${encodeURIComponent(word)}`
+      );
       const data = await res.json();
       setResults(data.matches || []);
       setDictionary(data.dictionary || {});
@@ -37,174 +49,464 @@ function App() {
     }
   };
 
-  const uniqueAuthors = Array.from(new Set(results.map(r => r.author).filter(Boolean)));
+  const uniqueAuthors = Array.from(
+    new Set(results.map(r => r.author).filter(Boolean))
+  );
+
   const filteredResults = selectedAuthor
     ? results.filter(r => r.author === selectedAuthor)
     : results;
+
   const visibleResults = filteredResults.slice(0, visibleCount);
 
   return (
-    <div className="min-h-screen bg-white text-gray-800 px-4 py-6 sm:p-10 font-sans">
-      <div className="mx-auto max-w-7xl space-y-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-center text-sky-700 mb-6 drop-shadow-sm">
-          Author's Dictionary
-        </h1>
+    <div className="min-h-screen bg-[#f8f8f6] text-[#252525] font-sans selection:bg-amber-100 selection:text-amber-900">
 
-        <div className="sm:px-12">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <input
-              className="w-full p-3 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
-              type="text"
-              placeholder="Enter a word..."
-              value={word}
-              onChange={(e) => setWord(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            />
-            <button
-              onClick={handleSearch}
-              className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 rounded-md shadow"
-            >
-              GO
-            </button>
+      {/* Background decoration */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-0">
+        <div className="absolute -top-48 -right-40 w-[500px] h-[500px] rounded-full bg-amber-100/30 blur-[100px]" />
+        <div className="absolute top-[45%] -left-48 w-[400px] h-[400px] rounded-full bg-sky-100/30 blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 py-8 sm:py-12">
+
+        {/* Header */}
+        <header className="text-center mb-12 sm:mb-16">
+
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#e9e5dc] bg-white/80 text-[#8b7355] text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] mb-6">
+            <Sparkles size={13} />
+            The Literary Word Explorer
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-8 mt-10">
-            {/* Dictionary Panel */}
-            <div className="lg:w-2/5 w-full">
-              {loading && <p className="text-center text-sm text-sky-600 mt-6">Searching...</p>}
-              {error && <p className="text-center text-sm text-red-600 mt-6">{error}</p>}
+          <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl tracking-[-0.055em] text-[#242424] leading-none">
+            Author's
+            <span className="text-[#b28b52] italic font-normal"> Dictionary</span>
+          </h1>
 
-              {dictionary && dictionary.word && (
-                <div className="p-4 sm:p-6 bg-white border border-gray-200 rounded-xl shadow-sm space-y-4 text-sm leading-relaxed">
-                  <h2 className="text-xl font-bold text-pink-700">
-                    {dictionary.word}{' '}
-                    <span className="text-gray-500 font-normal">{dictionary.phonetic}</span>
+          <p className="mt-5 text-sm sm:text-base text-[#85817b] max-w-xl mx-auto leading-relaxed">
+            Discover the meaning of words through the beautiful
+            language of literature.
+          </p>
+
+          <div className="flex items-center justify-center gap-3 mt-7 text-[10px] uppercase tracking-[0.2em] text-[#aaa49b]">
+            <span className="w-8 h-px bg-[#d9d1c4]" />
+            Words meet literature
+            <span className="w-8 h-px bg-[#d9d1c4]" />
+          </div>
+
+        </header>
+
+        {/* Search */}
+        <section className="max-w-3xl mx-auto mb-12 sm:mb-16">
+
+          <div className="search-shell bg-white p-2 rounded-2xl border border-[#eae7e1] shadow-[0_12px_40px_rgba(40,35,25,0.045)]">
+
+            <div className="flex items-center gap-3">
+
+              <div className="hidden sm:flex w-12 h-12 shrink-0 items-center justify-center rounded-xl bg-[#f8f5ef] text-[#b18b55]">
+                <Search size={21} strokeWidth={1.7} />
+              </div>
+
+              <input
+                className="w-full min-w-0 bg-transparent px-3 sm:px-1 py-4 text-base sm:text-lg text-[#333] placeholder:text-[#b6b1a9] outline-none"
+                type="text"
+                placeholder="Explore a word..."
+                value={word}
+                onChange={(e) => setWord(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                aria-label="Search for a word"
+              />
+
+              <button
+                type="button"
+                onClick={handleSearch}
+                disabled={loading}
+                className="search-button shrink-0 flex items-center justify-center gap-2 px-5 sm:px-7 py-4 rounded-xl bg-[#292925] hover:bg-[#a47c45] text-white text-sm font-medium transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <span className="search-spinner" />
+                ) : (
+                  <>
+                    <span>Explore</span>
+                    <ChevronRight size={16} />
+                  </>
+                )}
+              </button>
+
+            </div>
+          </div>
+
+          <p className="text-center text-[11px] text-[#aaa49b] mt-4 tracking-wide">
+            Enter at least 2 characters to begin your exploration
+          </p>
+
+        </section>
+
+        {/* Error */}
+        {error && (
+          <div className="max-w-3xl mx-auto mb-8 px-5 py-4 rounded-xl border border-red-100 bg-red-50 text-red-600 text-sm text-center">
+            {error}
+          </div>
+        )}
+
+        {/* Main content */}
+        <main className="grid grid-cols-1 lg:grid-cols-12 gap-7 lg:gap-8 items-start">
+
+          {/* Dictionary Panel */}
+          <section className="lg:col-span-5">
+
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-[#eee8dc] flex items-center justify-center text-[#a47c45]">
+                <BookOpen size={18} strokeWidth={1.7} />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-[#35332e]">
+                  Word Definition
+                </h2>
+                <p className="text-[11px] text-[#a29c91]">
+                  Meaning, pronunciation & origin
+                </p>
+              </div>
+            </div>
+
+            {loading && (
+              <div className="panel-card min-h-48 flex flex-col items-center justify-center gap-3">
+                <span className="search-spinner dark-spinner" />
+                <p className="text-xs text-[#a29c91]">Finding the meaning...</p>
+              </div>
+            )}
+
+            {!loading && !dictionary?.word && !error && (
+              <div className="panel-card empty-panel min-h-[300px] flex flex-col items-center justify-center text-center px-6">
+                <div className="empty-icon">
+                  <BookMarked size={27} strokeWidth={1.3} />
+                </div>
+                <h3 className="font-serif text-2xl text-[#555047] mt-5">
+                  A word awaits
+                </h3>
+                <p className="text-xs text-[#aaa49b] mt-2 max-w-[230px] leading-relaxed">
+                  Search for a word to uncover its meaning, origins and literary context.
+                </p>
+              </div>
+            )}
+
+            {dictionary && dictionary.word && (
+              <div className="panel-card dictionary-card p-5 sm:p-7">
+
+                {/* Word heading */}
+                <div className="pb-5 border-b border-[#eeeae3]">
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-[#b18b55] font-semibold">
+                    Dictionary Entry
+                  </span>
+
+                  <h2 className="font-serif text-4xl sm:text-5xl text-[#292823] tracking-tight mt-3 break-words">
+                    {dictionary.word}
                   </h2>
 
-                  {dictionary.origin && (
-                    <p className="italic text-gray-600">Origin: {dictionary.origin}</p>
+                  {dictionary.phonetic && (
+                    <p className="text-sm text-[#999188] mt-2 font-light tracking-wide">
+                      {dictionary.phonetic}
+                    </p>
                   )}
+                </div>
 
-                  {dictionary.phonetics?.length > 0 && (
+                {/* Origin */}
+                {dictionary.origin && (
+                  <div className="py-5 border-b border-[#eeeae3]">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Feather size={14} className="text-[#b18b55]" />
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-[#a18c70] font-semibold">
+                        Etymology
+                      </span>
+                    </div>
+                    <p className="text-sm text-[#777168] leading-relaxed italic">
+                      {dictionary.origin}
+                    </p>
+                  </div>
+                )}
+
+                {/* Pronunciation */}
+                {dictionary.phonetics?.length > 0 && (
+                  <div className="py-5 border-b border-[#eeeae3]">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Headphones size={14} className="text-[#b18b55]" />
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-[#a18c70] font-semibold">
+                        Pronunciation
+                      </span>
+                    </div>
+
                     <div className="flex flex-wrap gap-3">
                       {dictionary.phonetics.map((p, i) => (
-                        <div key={i} className="flex items-center gap-2">
-                          {p.text && <span className="text-gray-700 font-medium">{p.text}</span>}
+                        <div
+                          key={i}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#f8f6f2] border border-[#eeeae3]"
+                        >
+                          {p.text && (
+                            <span className="text-sm text-[#625c52]">
+                              {p.text}
+                            </span>
+                          )}
+
                           {p.audio && (
                             <button
+                              type="button"
                               onClick={() => {
                                 const audio = new Audio(p.audio);
                                 audio.play();
                               }}
-                              className="flex items-center gap-1 px-2 py-1 text-sky-600 bg-sky-50 hover:bg-sky-100 rounded-full shadow-sm transition"
+                              className="audio-button"
                               aria-label={`Play pronunciation ${p.text || ''}`}
                             >
                               <PlayCircle size={18} />
-                              <span className="text-xs font-medium">Play</span>
                             </button>
                           )}
                         </div>
                       ))}
                     </div>
-                  )}
+                  </div>
+                )}
+
+                {/* Meanings */}
+                <div className="pt-5 space-y-6">
+                  <div className="flex items-center gap-2">
+                    <BookOpen size={14} className="text-[#b18b55]" />
+                    <span className="text-[10px] uppercase tracking-[0.18em] text-[#a18c70] font-semibold">
+                      Definitions
+                    </span>
+                  </div>
 
                   {dictionary.meanings?.map((m, i) => (
-                    <div key={i} className="mt-2">
-                      <h3 className="font-semibold text-sky-700 capitalize">{m.partOfSpeech}</h3>
-                      <ul className="list-disc list-inside ml-4 text-gray-700">
+                    <div key={i}>
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="px-2.5 py-1 rounded-md bg-[#f2eee7] text-[#927449] text-[10px] font-semibold uppercase tracking-wider">
+                          {m.partOfSpeech}
+                        </span>
+                        <span className="flex-1 h-px bg-[#eeeae3]" />
+                      </div>
+
+                      <ul className="space-y-3">
                         {m.definitions?.map((def, j) => (
-                          <li key={j} className="mb-1">
-                            <span className="text-xs font-medium text-gray-900">{def.definition}</span>
-                            {def.example && (
-                              <span className="text-gray-500"> — “{def.example}”</span>
-                            )}
+                          <li key={j} className="flex gap-3">
+                            <span className="text-[#c1a477] text-xs mt-1.5">
+                              {String(j + 1).padStart(2, '0')}
+                            </span>
+
+                            <div className="min-w-0">
+                              <p className="text-sm text-[#4e4a43] leading-relaxed">
+                                {def.definition}
+                              </p>
+
+                              {def.example && (
+                                <p className="mt-2 text-xs text-[#989087] leading-relaxed italic border-l-2 border-[#d9c6a5] pl-3">
+                                  "{def.example}"
+                                </p>
+                              )}
+                            </div>
                           </li>
                         ))}
                       </ul>
                     </div>
                   ))}
                 </div>
+
+              </div>
+            )}
+          </section>
+
+          {/* Literary Matches Panel */}
+          <section className="lg:col-span-7">
+
+            <div className="flex items-center justify-between gap-3 mb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[#e9edf0] flex items-center justify-center text-[#708797]">
+                  <Feather size={18} strokeWidth={1.7} />
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold text-[#35332e]">
+                    Literary Discoveries
+                  </h2>
+                  <p className="text-[11px] text-[#a29c91]">
+                    Words in the voices of authors
+                  </p>
+                </div>
+              </div>
+
+              {results.length > 0 && (
+                <span className="text-[10px] font-semibold tracking-wide text-[#8c8171] bg-white border border-[#eae6df] rounded-full px-3 py-1.5">
+                  {filteredResults.length} MATCHES
+                </span>
               )}
             </div>
 
-            {/* Sentence Matches Panel */}
-            <div className="lg:w-3/5 w-full space-y-3">
-              {uniqueAuthors.length > 0 && (
-                <div className="mb-6">
-                  <h2 className="text-sm text-gray-800 mb-2">
-                    Author's Use “<span className='font-medium text-yellow-700'>{word}</span>”:
-                  </h2>
-                  <div className="flex flex-wrap gap-3 text-sm overflow-x-auto">
-                    <span
-                      onClick={() => setSelectedAuthor(null)}
-                      className={`cursor-pointer border-b-2 pb-0.5 ${
-                        !selectedAuthor
-                          ? 'border-sky-600 text-sky-600 font-semibold'
-                          : 'border-transparent text-gray-600 hover:text-red-600'
+            {/* Author filters */}
+            {uniqueAuthors.length > 0 && (
+              <div className="panel-card px-5 py-4 mb-5">
+
+                <p className="text-[10px] uppercase tracking-[0.18em] text-[#a49a8a] font-semibold mb-3">
+                  Filter by author
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAuthor(null)}
+                    className={`author-chip ${
+                      !selectedAuthor ? 'author-chip-active' : ''
+                    }`}
+                  >
+                    All Authors
+                  </button>
+
+                  {uniqueAuthors.map((author, idx) => (
+                    <button
+                      type="button"
+                      key={idx}
+                      onClick={() => setSelectedAuthor(author)}
+                      className={`author-chip ${
+                        selectedAuthor === author ? 'author-chip-active' : ''
                       }`}
                     >
-                      Show All
-                    </span>
-                    {uniqueAuthors.map((author, idx) => (
-                      <span
-                        key={idx}
-                        onClick={() => setSelectedAuthor(author)}
-                        className={`cursor-pointer border-b-2 pb-0.5 ${
-                          selectedAuthor === author
-                            ? 'border-sky-600 text-sky-600 font-semibold'
-                            : 'border-transparent text-gray-600 hover:text-sky-600'
-                        }`}
-                      >
-                        {author}
-                      </span>
-                    ))}
-                  </div>
+                      {author}
+                    </button>
+                  ))}
+
                 </div>
-              )}
+              </div>
+            )}
 
-              {visibleResults.map((item, idx) => {
-                const regex = new RegExp(`(${word})`, 'gi');
-                const parts = item.text.split(regex);
+            {/* Loading state */}
+            {loading && (
+              <div className="panel-card min-h-48 flex flex-col items-center justify-center gap-3">
+                <span className="search-spinner dark-spinner" />
+                <p className="text-xs text-[#a29c91]">
+                  Exploring literary collections...
+                </p>
+              </div>
+            )}
 
-                return (
-                  <div
-                    key={idx}
-                    className="px-4 py-3 bg-white border-l-4 border-sky-400 shadow-sm rounded-md text-sm"
-                  >
-                    <p className="mb-1">
-                      {parts.map((part, i) =>
-                        part.toLowerCase() === word.toLowerCase() ? (
-                          <strong key={i} className="text-black font-semibold">{part}</strong>
-                        ) : (
-                          <span key={i}>{part}</span>
-                        )
-                      )}
-                    </p>
-                    <div className="text-xs text-gray-600 italic">
-                      {item.author && <>{item.author}</>}
-                      {item.book && <> | {item.book}</>}
-                    </div>
-                  </div>
-                );
-              })}
-
-              {filteredResults.length > visibleResults.length && (
-                <div className="text-center mt-4">
-                  <button
-                    onClick={() => setVisibleCount(visibleCount + 10)}
-                    className="text-sky-600 text-sm font-medium underline hover:text-sky-800"
-                  >
-                    Load more...
-                  </button>
+            {/* Empty state */}
+            {!loading && results.length === 0 && !error && (
+              <div className="panel-card empty-panel min-h-[300px] flex flex-col items-center justify-center text-center px-6">
+                <div className="empty-icon">
+                  <Feather size={27} strokeWidth={1.3} />
                 </div>
-              )}
+                <h3 className="font-serif text-2xl text-[#555047] mt-5">
+                  Literature speaks
+                </h3>
+                <p className="text-xs text-[#aaa49b] mt-2 max-w-[260px] leading-relaxed">
+                  Search for a word and discover how celebrated authors have used it in their writing.
+                </p>
+              </div>
+            )}
 
-              {filteredResults.length === 0 && !loading && word && (
-                <p className="text-center text-gray-400 text-sm">No sentence matches found.</p>
-              )}
-            </div>
+            {/* Results */}
+            {!loading && visibleResults.length > 0 && (
+              <div className="space-y-3">
+
+                {visibleResults.map((item, idx) => {
+                  const regex = new RegExp(`(${word})`, 'gi');
+                  const parts = item.text.split(regex);
+
+                  return (
+                    <article
+                      key={idx}
+                      className="literary-card group"
+                    >
+                      <div className="flex gap-3 sm:gap-4">
+
+                        <div className="quote-mark font-serif">
+                          “
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+
+                          <p className="text-[13px] sm:text-sm text-[#514e48] leading-[1.9]">
+                            {parts.map((part, i) =>
+                              part.toLowerCase() === word.toLowerCase() ? (
+                                <strong
+                                  key={i}
+                                  className="word-highlight"
+                                >
+                                  {part}
+                                </strong>
+                              ) : (
+                                <span key={i}>{part}</span>
+                              )
+                            )}
+                          </p>
+
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-4 pt-3 border-t border-[#f0ede8]">
+
+                            {item.author && (
+                              <span className="text-[11px] font-semibold text-[#8d7049] tracking-wide">
+                                {item.author}
+                              </span>
+                            )}
+
+                            {item.author && item.book && (
+                              <span className="text-[#c6bbaa]">·</span>
+                            )}
+
+                            {item.book && (
+                              <span className="text-[11px] text-[#999187] italic">
+                                {item.book}
+                              </span>
+                            )}
+
+                          </div>
+
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+
+              </div>
+            )}
+
+            {/* No matches after filtering */}
+            {!loading && filteredResults.length === 0 && word && results.length > 0 && (
+              <div className="panel-card min-h-40 flex flex-col items-center justify-center text-center px-6">
+                <p className="font-serif text-xl text-[#777168]">
+                  No passages found
+                </p>
+                <p className="text-xs text-[#aaa49b] mt-2">
+                  Try selecting another author.
+                </p>
+              </div>
+            )}
+
+            {/* Load more */}
+            {filteredResults.length > visibleResults.length && (
+              <div className="flex justify-center mt-8">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount(visibleCount + 10)}
+                  className="load-more-button"
+                >
+                  <span>Discover more passages</span>
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            )}
+
+          </section>
+        </main>
+
+        {/* Footer */}
+        <footer className="mt-20 pt-7 border-t border-[#eae6df] text-center">
+          <div className="flex items-center justify-center gap-2 text-[#a99b86]">
+            <Feather size={14} />
+            <span className="font-serif italic text-sm">
+              Every word has a story.
+            </span>
           </div>
-        </div>
+          <p className="text-[9px] uppercase tracking-[0.22em] text-[#bbb4aa] mt-3">
+            Author's Dictionary
+          </p>
+        </footer>
+
       </div>
     </div>
   );
